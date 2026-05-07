@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: vikas-bhardwaj-portfolio
+    env: node
+    plan: free
+    buildCommand: npm install && npm run install:all && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_API_URL
+        value: /api
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: ALLOW_FILE_DB_FALLBACK
+        value: false
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_NAME
+        value: Vikas Bhardwaj
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CLIENT_URL
+        sync: false

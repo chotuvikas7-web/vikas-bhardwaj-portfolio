@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #f7f5ef;
+  color: #17202a;
+}
+
+.dark body {
+  background: #111827;
+  color: #f8fafc;
+}
+
+@layer components {
+  .container-pad {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-title {
+    @apply text-3xl font-bold tracking-normal text-slate-950 dark:text-white sm:text-4xl;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:bg-emerald-400 dark:text-slate-950 dark:hover:bg-emerald-300;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-900 transition hover:border-slate-900 dark:border-slate-700 dark:text-white dark:hover:border-emerald-300;
+  }
+
+  .input {
+    @apply w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-950 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:ring-emerald-500/20;
+  }
+
+  .section-surface {
+    @apply rounded-[2rem] border border-slate-200 bg-white/90 p-10 shadow-2xl backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/80;
+  }
+
+  .hero-tag {
+    @apply inline-flex rounded-full border border-emerald-300/30 bg-emerald-300/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-emerald-200;
+  }
+}
