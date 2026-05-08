@@ -15,7 +15,7 @@ const sampleProjects = [
     techStack: ["React", "Tailwind CSS", "Express", "MongoDB"],
     githubLink: "https://github.com/",
     liveLink: "https://example.com/",
-    image: "/project-images/saas-analytics.svg",
+    image: "/project-images/saas-analytics.png",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
@@ -27,7 +27,7 @@ const sampleProjects = [
     techStack: ["Node.js", "JWT", "Mongoose", "React Router"],
     githubLink: "https://github.com/",
     liveLink: "https://example.com/",
-    image: "/project-images/portfolio-cms.svg",
+    image: "/project-images/portfolio-cms.png",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
@@ -39,7 +39,7 @@ const sampleProjects = [
     techStack: ["ReactJS", "NodeJs", "Express", "RestAPI"],
     githubLink: "",
     liveLink: "https://www.shaadisouk.com/",
-    image: "/project-images/shaadi-souk.svg",
+    image: "/project-images/shaadi-souk.png",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
@@ -51,7 +51,7 @@ const sampleProjects = [
     techStack: ["HTML", "Bootstrap", "Splide.js"],
     githubLink: "",
     liveLink: "https://www.virtualemployee.com/",
-    image: "/project-images/virtual-employee.svg",
+    image: "/project-images/virtual-employee.png",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
@@ -63,7 +63,7 @@ const sampleProjects = [
     techStack: ["HTML", "GSAP", "Bootstrap", "CSS"],
     githubLink: "",
     liveLink: "https://teckvalley.co.in/",
-    image: "/project-images/teckvalley-india.svg",
+    image: "/project-images/teckvalley-india.png",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
@@ -75,7 +75,7 @@ const sampleProjects = [
     techStack: ["HTML", "CSS", "JavaScript"],
     githubLink: "",
     liveLink: "https://teckvalley.com/",
-    image: "/project-images/teckvalley.svg",
+    image: "/project-images/teckvalley.png",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
@@ -87,7 +87,7 @@ const sampleProjects = [
     techStack: ["HTML", "Bootstrap", "JavaScript"],
     githubLink: "",
     liveLink: "https://mysagedental.com/",
-    image: "/project-images/my-sage-dental.svg",
+    image: "/project-images/my-sage-dental.png",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
