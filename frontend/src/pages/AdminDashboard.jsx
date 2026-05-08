@@ -314,8 +314,21 @@ const AdminDashboard = () => {
   const [emailTemplates, setEmailTemplates] = useState([]);
   const [emailDraft, setEmailDraft] = useState({ id: null, subject: "", recipient: "", body: "" });
   const [emailMessage, setEmailMessage] = useState("");
+  const [storageInfo, setStorageInfo] = useState({ dbMode: "unknown", persistent: false });
   const { logout, user } = useAuth();
   const { profile, loading: profileLoading, error: profileContextError, saveProfile, deleteProfile, refreshProfile } = useProfile();
+
+  const loadStorageInfo = async () => {
+    try {
+      const { data } = await api.get("/health");
+      setStorageInfo({
+        dbMode: data.dbMode || "unknown",
+        persistent: Boolean(data.persistent)
+      });
+    } catch {
+      setStorageInfo({ dbMode: "unknown", persistent: false });
+    }
+  };
 
   const loadProjects = async () => {
     try {
@@ -353,6 +366,7 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
+    loadStorageInfo();
     loadProjects();
     loadCategories();
     loadMessages();
@@ -741,6 +755,11 @@ const AdminDashboard = () => {
               <p className="mt-2 text-3xl font-bold text-slate-950 dark:text-white">{emailTemplates.length}</p>
             </div>
           </div>
+          {!storageInfo.persistent && (
+            <div className="border border-amber-300 bg-amber-50 p-4 text-sm leading-6 text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100">
+              Storage mode: <span className="font-semibold">{storageInfo.dbMode}</span>. Admin edits now stay saved while this Render instance is running, but permanent saving after restarts/redeploys requires MongoDB Atlas in <span className="font-semibold">MONGO_URI</span>. For permanent media, use image/resume URLs instead of uploads.
+            </div>
+          )}
           {activeSection === "dashboard" && (
             <div className="border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950/90">
               <p className="text-sm uppercase tracking-[0.3em] text-emerald-700">Project insights</p>

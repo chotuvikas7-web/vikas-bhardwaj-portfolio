@@ -50,7 +50,11 @@ app.use(morgan("dev"));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.get("/api/health", (req, res) => {
-  res.json({ message: "Developer portfolio API is running" });
+  res.json({
+    message: "Developer portfolio API is running",
+    dbMode: process.env.DB_MODE || "unknown",
+    persistent: process.env.DB_MODE === "mongo"
+  });
 });
 
 app.use("/api/auth", authRoutes);

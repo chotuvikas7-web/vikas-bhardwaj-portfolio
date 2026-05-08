@@ -29,8 +29,7 @@ const ensureFile = async () => {
 export const readProfile = async () => {
   await ensureFile();
   const content = await fs.readFile(dataFile, "utf8");
-  const profile = JSON.parse(content);
-  return profile && Object.keys(profile).length > 0 ? profile : defaultProfile;
+  return JSON.parse(content);
 };
 
 export const writeProfile = async (profile) => {

@@ -94,18 +94,6 @@ const sampleProjects = [
   }
 ];
 
-const knownProjectImages = new Map(sampleProjects.map((project) => [project.title, project.image]));
-
-const withSeedProjects = (projects) => {
-  const byTitle = new Map(projects.map((project) => [project.title, project]));
-  const normalized = projects.map((project) => ({
-    ...project,
-    image: knownProjectImages.get(project.title) || project.image
-  }));
-  const missing = sampleProjects.filter((project) => !byTitle.has(project.title));
-  return [...normalized, ...missing];
-};
-
 const ensureFile = async () => {
   await fs.mkdir(path.dirname(dataFile), { recursive: true });
   try {
@@ -119,11 +107,7 @@ export const readProjects = async () => {
   await ensureFile();
   const content = await fs.readFile(dataFile, "utf8");
   const projects = JSON.parse(content);
-  const seededProjects = withSeedProjects(projects);
-  if (seededProjects.length !== projects.length || seededProjects.some((project, index) => project.image !== projects[index]?.image)) {
-    await writeProjects(seededProjects);
-  }
-  return seededProjects;
+  return Array.isArray(projects) ? projects : sampleProjects;
 };
 
 export const writeProjects = async (projects) => {

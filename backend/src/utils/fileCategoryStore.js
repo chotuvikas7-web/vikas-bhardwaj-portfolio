@@ -9,26 +9,14 @@ const dataFile = path.join(__dirname, "../../data/categories.json");
 
 const defaultCategories = ["Website", "Dashboard", "Full Stack", "Case Studies", "Brochure", "PPC Pages"];
 
-const withDefaultCategories = (categories) => {
-  const byName = new Map(
-    categories
-      .filter((category) => category?.name)
-      .map((category) => [category.name.trim().toLowerCase(), category])
-  );
-
-  const missing = defaultCategories
-    .filter((name) => !byName.has(name.toLowerCase()))
-    .map((name) => ({ _id: randomUUID(), name }));
-
-  return [...categories, ...missing].sort((a, b) => a.name.localeCompare(b.name));
-};
+const createDefaultCategories = () => defaultCategories.map((name) => ({ _id: randomUUID(), name }));
 
 const ensureFile = async () => {
   await fs.mkdir(path.dirname(dataFile), { recursive: true });
   try {
     await fs.access(dataFile);
   } catch {
-    await fs.writeFile(dataFile, JSON.stringify(withDefaultCategories([]), null, 2));
+    await fs.writeFile(dataFile, JSON.stringify(createDefaultCategories(), null, 2));
   }
 };
 
@@ -36,11 +24,7 @@ export const readCategories = async () => {
   await ensureFile();
   const content = await fs.readFile(dataFile, "utf8");
   const categories = JSON.parse(content);
-  const seededCategories = withDefaultCategories(categories);
-  if (seededCategories.length !== categories.length) {
-    await writeCategories(seededCategories);
-  }
-  return seededCategories;
+  return Array.isArray(categories) ? categories : createDefaultCategories();
 };
 
 export const writeCategories = async (categories) => {
