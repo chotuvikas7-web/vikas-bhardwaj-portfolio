@@ -1,5 +1,5 @@
 import React from "react";
-import { BriefcaseBusiness, CheckCircle, Code2, GraduationCap, LayoutDashboard, Sparkles } from "lucide-react";
+import { Bot, BriefcaseBusiness, CheckCircle, Cloud, Code2, GraduationCap, LayoutDashboard, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import PageShell from "../components/PageShell";
@@ -9,6 +9,8 @@ const capabilityCards = [
   { icon: Code2, label: "HTML/CSS/JS", value: 95, text: "Clean front-end foundations with responsive structure." },
   { icon: LayoutDashboard, label: "React UI", value: 90, text: "Reusable components, stateful views, and polished screens." },
   { icon: Sparkles, label: "Animations", value: 86, text: "Smooth motion with Framer Motion, Three.js, and GSAP." },
+  { icon: Bot, label: "AI Tools", value: 88, text: "ChatGPT, Gemini, and AI-assisted workflows for faster delivery." },
+  { icon: Cloud, label: "Cloud Tools", value: 84, text: "Deployment-ready workflows with GitHub, Render, and cloud hosting." },
   { icon: CheckCircle, label: "Product Design", value: 82, text: "Interfaces shaped for clarity, speed, and usability." }
 ];
 
@@ -29,7 +31,8 @@ const About = () => {
   const buildRows = [
     { id: 1, item: "Reusable Components", detail: "Clean UI design with reusable components." },
     { id: 2, item: "Responsive Layouts", detail: "Responsive layouts using Tailwind CSS and Bootstrap." },
-    { id: 3, item: "Motion UI", detail: "Interactive animations with Three.js, GSAP, and Framer Motion." }
+    { id: 3, item: "Motion UI", detail: "Interactive animations with Three.js, GSAP, and Framer Motion." },
+    { id: 4, item: "AI and Cloud Workflows", detail: "Using ChatGPT, Gemini, GitHub, Render, and cloud tools to speed up planning, coding, deployment, and debugging." }
   ];
 
   if (loading) {
@@ -57,7 +60,7 @@ const About = () => {
         </p>
       </div>
 
-      <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {capabilityCards.map((item, index) => {
           const Icon = item.icon;
           return (
