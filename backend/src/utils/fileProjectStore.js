@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+import { randomUUID } from "crypto";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -39,7 +40,7 @@ const sampleProjects = [
     techStack: ["ReactJS", "NodeJs", "Express", "RestAPI"],
     githubLink: "",
     liveLink: "https://www.shaadisouk.com/",
-    image: "/project-images/shaadi-souk.png",
+    image: "/project-images/shaadi-souk-previous.jpg",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
@@ -51,7 +52,7 @@ const sampleProjects = [
     techStack: ["HTML", "Bootstrap", "Splide.js"],
     githubLink: "",
     liveLink: "https://www.virtualemployee.com/",
-    image: "/project-images/virtual-employee.png",
+    image: "/project-images/virtual-employee-real.png",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
@@ -63,7 +64,7 @@ const sampleProjects = [
     techStack: ["HTML", "GSAP", "Bootstrap", "CSS"],
     githubLink: "",
     liveLink: "https://teckvalley.co.in/",
-    image: "/project-images/teckvalley-india.png",
+    image: "/project-images/teckvalley-india-real.png",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
@@ -75,7 +76,7 @@ const sampleProjects = [
     techStack: ["HTML", "CSS", "JavaScript"],
     githubLink: "",
     liveLink: "https://teckvalley.com/",
-    image: "/project-images/teckvalley.png",
+    image: "/project-images/teckvalley-previous.jpg",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
@@ -87,7 +88,7 @@ const sampleProjects = [
     techStack: ["HTML", "Bootstrap", "JavaScript"],
     githubLink: "",
     liveLink: "https://mysagedental.com/",
-    image: "/project-images/my-sage-dental.png",
+    image: "/project-images/my-sage-dental-real.png",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
