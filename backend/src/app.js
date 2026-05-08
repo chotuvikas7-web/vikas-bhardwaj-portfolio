@@ -14,7 +14,12 @@ import messageRoutes from "./routes/messageRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const frontendDistPath = path.join(__dirname, "../../frontend/dist");
 const app = express();
+
+if (process.env.NODE_ENV === "production" && fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+}
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 const allowedOrigins = [
@@ -51,10 +56,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/messages", messageRoutes);
 
-const frontendDistPath = path.join(__dirname, "../../frontend/dist");
-
 if (process.env.NODE_ENV === "production" && fs.existsSync(frontendDistPath)) {
-  app.use(express.static(frontendDistPath));
   app.get("*", (req, res, next) => {
     if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) {
       return next();
