@@ -24,6 +24,9 @@ if (process.env.NODE_ENV === "production" && fs.existsSync(frontendDistPath)) {
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 const allowedOrigins = [
   process.env.CLIENT_URL,
+  process.env.RENDER_EXTERNAL_URL,
+  "https://vikas-bhardwaj-portfolio-ui.onrender.com",
+  "https://vikas-bhardwaj-portfolio.onrender.com",
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "http://localhost:4173",
