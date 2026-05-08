@@ -1,6 +1,5 @@
 import fs from "fs/promises";
 import path from "path";
-import { randomUUID } from "crypto";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -9,28 +8,102 @@ const dataFile = path.join(__dirname, "../../data/projects.json");
 
 const sampleProjects = [
   {
-    _id: randomUUID(),
+    _id: "project-saas-analytics-dashboard",
     title: "SaaS Analytics Dashboard",
     description: "A role-aware analytics dashboard with project KPIs, API-backed charts, and responsive data views.",
+    category: "Dashboard",
     techStack: ["React", "Tailwind CSS", "Express", "MongoDB"],
     githubLink: "https://github.com/",
     liveLink: "https://example.com/",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
+    image: "/project-images/saas-analytics.svg",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
   {
-    _id: randomUUID(),
+    _id: "project-developer-portfolio-cms",
     title: "Developer Portfolio CMS",
     description: "A full-stack portfolio with JWT admin tools, RESTful project CRUD, validation, and local image uploads.",
+    category: "Full Stack",
     techStack: ["Node.js", "JWT", "Mongoose", "React Router"],
     githubLink: "https://github.com/",
     liveLink: "https://example.com/",
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
+    image: "/project-images/portfolio-cms.svg",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    _id: "project-shaadi-souk",
+    title: "Shaadi Souk",
+    description: "A matrimonial website built with modern UI technologies and responsive user journeys.",
+    category: "Website",
+    techStack: ["ReactJS", "NodeJs", "Express", "RestAPI"],
+    githubLink: "",
+    liveLink: "https://www.shaadisouk.com/",
+    image: "/project-images/shaadi-souk.svg",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    _id: "project-virtual-employee",
+    title: "Virtual Employee",
+    description: "An interactive platform for virtual employee services with responsive pages and polished content sections.",
+    category: "Website",
+    techStack: ["HTML", "Bootstrap", "Splide.js"],
+    githubLink: "",
+    liveLink: "https://www.virtualemployee.com/",
+    image: "/project-images/virtual-employee.svg",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    _id: "project-teckvalley-india",
+    title: "TeckValley India",
+    description: "Company website showcasing services with modern UI sections, animations, and conversion-focused layouts.",
+    category: "Website",
+    techStack: ["HTML", "GSAP", "Bootstrap", "CSS"],
+    githubLink: "",
+    liveLink: "https://teckvalley.co.in/",
+    image: "/project-images/teckvalley-india.svg",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    _id: "project-teckvalley",
+    title: "TeckValley",
+    description: "A company website with interactive elements, responsive structure, and product-focused design.",
+    category: "Website",
+    techStack: ["HTML", "CSS", "JavaScript"],
+    githubLink: "",
+    liveLink: "https://teckvalley.com/",
+    image: "/project-images/teckvalley.svg",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    _id: "project-my-sage-dental",
+    title: "My Sage Dental",
+    description: "Dental clinic website with user-friendly pages, service content, and responsive appointment-focused UI.",
+    category: "Website",
+    techStack: ["HTML", "Bootstrap", "JavaScript"],
+    githubLink: "",
+    liveLink: "https://mysagedental.com/",
+    image: "/project-images/my-sage-dental.svg",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
 ];
+
+const knownProjectImages = new Map(sampleProjects.map((project) => [project.title, project.image]));
+
+const withSeedProjects = (projects) => {
+  const byTitle = new Map(projects.map((project) => [project.title, project]));
+  const normalized = projects.map((project) => ({
+    ...project,
+    image: knownProjectImages.get(project.title) || project.image
+  }));
+  const missing = sampleProjects.filter((project) => !byTitle.has(project.title));
+  return [...normalized, ...missing];
+};
 
 const ensureFile = async () => {
   await fs.mkdir(path.dirname(dataFile), { recursive: true });
@@ -44,7 +117,12 @@ const ensureFile = async () => {
 export const readProjects = async () => {
   await ensureFile();
   const content = await fs.readFile(dataFile, "utf8");
-  return JSON.parse(content);
+  const projects = JSON.parse(content);
+  const seededProjects = withSeedProjects(projects);
+  if (seededProjects.length !== projects.length || seededProjects.some((project, index) => project.image !== projects[index]?.image)) {
+    await writeProjects(seededProjects);
+  }
+  return seededProjects;
 };
 
 export const writeProjects = async (projects) => {
