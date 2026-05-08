@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
-const canUseFileFallback = () => process.env.ALLOW_FILE_DB_FALLBACK !== "false";
+const isProduction = () => process.env.NODE_ENV === "production";
+const canUseFileFallback = () => !isProduction() && process.env.ALLOW_FILE_DB_FALLBACK !== "false";
 
 const useFileFallback = (reason) => {
   process.env.DB_MODE = "file";
@@ -8,10 +9,25 @@ const useFileFallback = (reason) => {
 };
 
 export const connectDB = async () => {
+  if (process.env.DB_MODE === "file") {
+    if (isProduction()) {
+      console.error("DB_MODE=file is not allowed in production because Render's filesystem is ephemeral. Set MONGO_URI instead.");
+      process.exit(1);
+    }
+    useFileFallback("DB_MODE=file");
+    return;
+  }
+
   const mongoUri = process.env.MONGO_URI?.trim();
 
   if (!mongoUri || !/^mongodb(\+srv)?:\/\//.test(mongoUri)) {
-    useFileFallback("MONGO_URI is missing or invalid");
+    if (canUseFileFallback()) {
+      useFileFallback("MONGO_URI is missing or invalid");
+      return;
+    }
+
+    console.error("MONGO_URI is missing or invalid. Persistent production data requires MongoDB.");
+    process.exit(1);
     return;
   }
 

@@ -566,8 +566,8 @@ const AdminDashboard = () => {
         <div className="flex items-center gap-3">
           <img src={imageUrl(project.image)} alt={project.title} className="h-14 w-20 rounded-xl object-cover" />
           <div>
-            <p className="font-semibold text-white dark:text-white">{project.title}</p>
-            <p className="line-clamp-1 text-sm text-white/70 dark:text-slate-400">{project.description}</p>
+            <p className="font-semibold text-slate-950 dark:text-white">{project.title}</p>
+            <p className="line-clamp-1 text-sm text-slate-600 dark:text-slate-400">{project.description}</p>
           </div>
         </div>
       )
@@ -612,10 +612,10 @@ const AdminDashboard = () => {
       sortable: false,
       render: (message) => (
         <div className="flex flex-wrap gap-2">
-          <button type="button" className="inline-flex items-center gap-1 rounded-md border border-slate-200 px-3 py-2 text-xs font-semibold text-white transition hover:border-slate-400 dark:border-slate-700 dark:text-slate-200" onClick={() => handlePreviewMessage(message)} title="Preview message">
+          <button type="button" className="inline-flex items-center gap-1 rounded-md border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-950 dark:border-slate-700 dark:text-slate-200 dark:hover:text-white" onClick={() => handlePreviewMessage(message)} title="Preview message">
             <Eye className="h-3.5 w-3.5" /> Preview
           </button>
-          <button type="button" className="inline-flex items-center gap-1 rounded-md border border-rose-200 px-3 py-2 text-xs font-semibold text-rose-200 transition hover:border-rose-300 dark:border-rose-900 dark:text-rose-200" onClick={() => handleDeleteMessage(message)} title="Delete message">
+          <button type="button" className="inline-flex items-center gap-1 rounded-md border border-rose-200 px-3 py-2 text-xs font-semibold text-rose-700 transition hover:border-rose-300 dark:border-rose-900 dark:text-rose-200" onClick={() => handleDeleteMessage(message)} title="Delete message">
             <Trash2 className="h-3.5 w-3.5" /> Delete
           </button>
         </div>
@@ -644,7 +644,7 @@ const AdminDashboard = () => {
       label: "Actions",
       sortable: false,
       render: (category) => (
-        <button onClick={() => handleDeleteCategory(category._id)} className="rounded-md border border-rose-200 px-3 py-2 text-xs font-semibold text-rose-200 transition hover:border-rose-300 dark:border-rose-900 dark:text-rose-200">
+        <button onClick={() => handleDeleteCategory(category._id)} className="rounded-md border border-rose-200 px-3 py-2 text-xs font-semibold text-rose-700 transition hover:border-rose-300 dark:border-rose-900 dark:text-rose-200">
           Delete
         </button>
       )
@@ -652,7 +652,7 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <section className="min-h-screen bg-[#f7f5ef]">
+    <section className="min-h-screen bg-[#f7f5ef] text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <Helmet>
         <title>Admin Dashboard | Developer Portfolio</title>
       </Helmet>

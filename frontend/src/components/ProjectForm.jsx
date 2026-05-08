@@ -42,20 +42,20 @@ const ProjectForm = ({ initialProject, onSubmit, isSaving, onCancel, categories 
   };
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+    <form onSubmit={handleSubmit(submit)} className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 text-slate-900 shadow-soft dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100">
       <div className="grid gap-4 md:grid-cols-2">
-        <label className="space-y-1 text-sm font-medium">
+        <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
           <span>Title</span>
           <input className="input" {...register("title", { required: "Title is required" })} />
           {errors.title && <small className="text-red-600">{errors.title.message}</small>}
         </label>
-        <label className="space-y-1 text-sm font-medium">
+        <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
           <span>Tech stack</span>
           <input className="input" placeholder="React, Node, MongoDB" {...register("techStack", { required: "Tech stack is required" })} />
           {errors.techStack && <small className="text-red-600">{errors.techStack.message}</small>}
         </label>
       </div>
-      <label className="space-y-1 text-sm font-medium">
+      <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
         <span>Category</span>
         <select className="input h-12" {...register("category", { required: "Category is required" })}>
           <option value="">Select category</option>
@@ -67,27 +67,27 @@ const ProjectForm = ({ initialProject, onSubmit, isSaving, onCancel, categories 
         </select>
         {errors.category && <small className="text-red-600">{errors.category.message}</small>}
       </label>
-      <label className="space-y-1 text-sm font-medium">
+      <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
         <span>Description</span>
         <textarea className="input min-h-28" {...register("description", { required: "Description is required" })} />
         {errors.description && <small className="text-red-600">{errors.description.message}</small>}
       </label>
       <div className="grid gap-4 md:grid-cols-2">
-        <label className="space-y-1 text-sm font-medium">
+        <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
           <span>GitHub link</span>
           <input className="input" type="url" {...register("githubLink")} />
         </label>
-        <label className="space-y-1 text-sm font-medium">
+        <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
           <span>Live link</span>
           <input className="input" type="url" {...register("liveLink")} />
         </label>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
-        <label className="space-y-1 text-sm font-medium">
+        <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
           <span>Image URL</span>
           <input className="input" {...register("image")} />
         </label>
-        <label className="space-y-1 text-sm font-medium">
+        <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
           <span>Upload image</span>
           <input className="input file:mr-3 file:rounded-md file:border-0 file:bg-slate-950 file:px-3 file:py-1.5 file:text-white dark:file:bg-emerald-400 dark:file:text-slate-950" type="file" accept="image/*" {...register("imageFile")} />
         </label>
