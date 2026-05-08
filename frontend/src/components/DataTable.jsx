@@ -65,7 +65,7 @@ const DataTable = ({
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45 }}
-      className="overflow-hidden rounded-xl border border-slate-900/10 bg-white/75 shadow-2xl shadow-slate-400/20 backdrop-blur-xl dark:border-white/15 dark:bg-white/10 dark:shadow-black/20"
+      className="overflow-hidden rounded-xl border border-slate-900/10 bg-white/90 text-slate-800 shadow-2xl shadow-slate-400/20 backdrop-blur-xl dark:border-white/15 dark:bg-white/10 dark:text-white/80 dark:shadow-black/20"
     >
       {searchable && (
         <div className="flex flex-col gap-3 border-b border-slate-900/10 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-white/10">
@@ -84,7 +84,7 @@ const DataTable = ({
         </div>
       )}
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[720px] text-left text-sm">
+        <table className="w-full min-w-[720px] text-left text-sm text-slate-800 dark:text-white/80">
           <thead className="border-b border-slate-900/10 bg-slate-950/5 text-slate-800 dark:border-white/15 dark:bg-white/10 dark:text-cyan-50">
             <tr>
               {columns.map((column) => {
@@ -119,10 +119,10 @@ const DataTable = ({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: rowIndex * 0.03 }}
-                  className="text-slate-700 transition hover:bg-slate-950/5 dark:text-white/80 dark:hover:bg-white/10"
+                  className="bg-white/40 text-slate-800 transition hover:bg-slate-950/5 dark:bg-transparent dark:text-white/80 dark:hover:bg-white/10"
                 >
                   {columns.map((column) => (
-                    <td key={column.key} className="px-5 py-4 align-top">
+                    <td key={column.key} className="px-5 py-4 align-top text-slate-800 dark:text-white/80">
                       {column.render ? column.render(row) : getCellValue(row, column)}
                     </td>
                   ))}
