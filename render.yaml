@@ -3,7 +3,7 @@ services:
     name: vikas-bhardwaj-portfolio
     env: node
     plan: free
-    buildCommand: npm install && npm run install:all && npm run build
+    buildCommand: npm install --include=dev && npm install --include=dev --prefix backend && npm install --include=dev --prefix frontend && npm run build --prefix frontend
     startCommand: npm start
     envVars:
       - key: NODE_ENV
