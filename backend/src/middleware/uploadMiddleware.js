@@ -16,12 +16,12 @@ const fileFilter = (req, file, cb) => {
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   ];
 
-  if (file.fieldname === "image" && file.mimetype.startsWith("image/")) {
+  if ((file.fieldname === "image" || file.fieldname === "imageFile") && file.mimetype.startsWith("image/")) {
     cb(null, true);
   } else if (file.fieldname === "resume" && allowedResumeTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only image files and PDF/DOC/DOCX resumes are allowed"));
+    cb(new Error("Only image files are allowed for images, and only PDF/DOC/DOCX files are allowed for resumes"));
   }
 };
 
