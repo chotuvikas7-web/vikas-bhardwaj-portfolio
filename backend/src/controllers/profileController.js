@@ -1,16 +1,14 @@
 import Profile from "../models/Profile.js";
 import { readProfile, writeProfile } from "../utils/fileProfileStore.js";
 
-const normalizeProfile = (body) => ({
-  name: typeof body.name === "string" ? body.name.trim() : "",
-  role: typeof body.role === "string" ? body.role.trim() : "",
-  email: typeof body.email === "string" ? body.email.trim() : "",
-  bio: typeof body.bio === "string" ? body.bio.trim() : "",
-  linkedIn: typeof body.linkedIn === "string" ? body.linkedIn.trim() : "",
-  phone: typeof body.phone === "string" ? body.phone.trim() : "",
-  image: typeof body.image === "string" ? body.image.trim() : "",
-  resume: typeof body.resume === "string" ? body.resume.trim() : ""
-});
+const profileFields = ["name", "role", "email", "bio", "linkedIn", "phone", "image", "resume"];
+
+const normalizeProfile = (body, existing = {}) =>
+  profileFields.reduce((profile, field) => {
+    const value = Object.prototype.hasOwnProperty.call(body, field) ? body[field] : existing?.[field];
+    profile[field] = typeof value === "string" ? value.trim() : "";
+    return profile;
+  }, {});
 
 export const getProfile = async (req, res, next) => {
   try {
@@ -30,20 +28,33 @@ export const createOrUpdateProfile = async (req, res, next) => {
   try {
     const imageFile = req.files?.image?.[0];
     const resumeFile = req.files?.resume?.[0];
-    const image = imageFile ? `/uploads/${imageFile.filename}` : req.body.image;
-    const resume = resumeFile ? `/uploads/${resumeFile.filename}` : req.body.resume;
-    const payload = normalizeProfile({ ...req.body, image, resume });
-    if (!payload.name) {
-      res.status(400);
-      throw new Error("Name is required");
+    const updateBody = { ...req.body };
+    if (imageFile) {
+      updateBody.image = `/uploads/${imageFile.filename}`;
+    }
+    if (resumeFile) {
+      updateBody.resume = `/uploads/${resumeFile.filename}`;
     }
 
     if (process.env.DB_MODE === "file") {
+      const existingProfile = (await readProfile()) || {};
+      const payload = normalizeProfile(updateBody, existingProfile);
+      if (!payload.name) {
+        res.status(400);
+        throw new Error("Name is required");
+      }
+
       const profile = await writeProfile(payload);
       return res.status(200).json(profile);
     }
 
     let profile = await Profile.findOne();
+    const payload = normalizeProfile(updateBody, profile?.toObject());
+    if (!payload.name) {
+      res.status(400);
+      throw new Error("Name is required");
+    }
+
     if (profile) {
       profile.set(payload);
       await profile.save();

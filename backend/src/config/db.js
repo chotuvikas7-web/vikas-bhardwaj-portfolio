@@ -1,6 +1,14 @@
 import mongoose from "mongoose";
 
-const canUseFileFallback = () => process.env.ALLOW_FILE_DB_FALLBACK === "true";
+const canUseFileFallback = () => {
+  if (process.env.ALLOW_FILE_DB_FALLBACK !== "true") return false;
+
+  if (process.env.NODE_ENV === "production" && process.env.ALLOW_NONPERSISTENT_FILE_DB_IN_PRODUCTION !== "true") {
+    return false;
+  }
+
+  return true;
+};
 
 const useFileFallback = (reason) => {
   process.env.DB_MODE = "file";
@@ -21,7 +29,9 @@ export const connectDB = async () => {
       return;
     }
 
-    console.error("MONGO_URI is missing or invalid. Set ALLOW_FILE_DB_FALLBACK=true to keep the site live without MongoDB.");
+    console.error(
+      "MONGO_URI is missing or invalid. Production requires MongoDB so admin-saved data is not lost on restarts or redeploys."
+    );
     process.exit(1);
     return;
   }
@@ -39,6 +49,9 @@ export const connectDB = async () => {
     }
 
     console.error(`MongoDB connection failed: ${error.message}`);
+    if (process.env.NODE_ENV === "production") {
+      console.error("Production file fallback is disabled to protect backend-saved portfolio data.");
+    }
     process.exit(1);
   }
 };

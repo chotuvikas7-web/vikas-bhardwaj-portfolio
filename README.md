@@ -132,7 +132,7 @@ Default admin values come from `backend/.env.example`; change them before deploy
 
 - The repo includes `render.yaml` for a free Render web service named `vikas-bhardwaj-portfolio`.
 - The Render service builds the React frontend and serves it from the Express backend, so the live app, admin dashboard, and API can run from one URL.
-- Create a free MongoDB Atlas database and set `MONGO_URI` in Render. Keep `ALLOW_FILE_DB_FALLBACK=false` in production so admin-added projects, profile data, messages, and categories persist.
+- Create a free MongoDB Atlas database and set `MONGO_URI` in Render. Keep `ALLOW_FILE_DB_FALLBACK=false` in production so admin-added projects, profile data, messages, and categories persist. The backend now refuses production JSON fallback unless `ALLOW_NONPERSISTENT_FILE_DB_IN_PRODUCTION=true` is explicitly set, because Render's normal filesystem is reset on restarts and redeploys.
 - Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in Render. On startup, the backend creates the admin user if it does not already exist.
 - Set `CLIENT_URL` to the final Render URL, for example `https://vikas-bhardwaj-portfolio.onrender.com`.
 - Admin login will be available at `/admin/login`.
