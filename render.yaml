@@ -13,7 +13,9 @@ services:
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: ALLOW_FILE_DB_FALLBACK
-        value: false
+        value: true
+      - key: ALLOW_NONPERSISTENT_FILE_DB_IN_PRODUCTION
+        value: true
       - key: MONGO_URI
         sync: false
       - key: JWT_SECRET
