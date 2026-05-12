@@ -25,6 +25,22 @@ export const ProfileProvider = ({ children }) => {
     loadProfile();
   }, []);
 
+  useEffect(() => {
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") {
+        loadProfile();
+      }
+    };
+
+    window.addEventListener("focus", loadProfile);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+
+    return () => {
+      window.removeEventListener("focus", loadProfile);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
+    };
+  }, []);
+
   const saveProfile = async (profileData) => {
     const { data } = await api.post("/profile", profileData, {
       headers: {
