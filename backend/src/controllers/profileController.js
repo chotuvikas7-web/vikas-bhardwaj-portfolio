@@ -71,17 +71,8 @@ export const createOrUpdateProfile = async (req, res, next) => {
 
 export const deleteProfile = async (req, res, next) => {
   try {
-    if (process.env.DB_MODE === "file") {
-      await writeProfile(null);
-      return res.json({ message: "Profile deleted" });
-    }
-
-    const profile = await Profile.findOne();
-    if (profile) {
-      await profile.deleteOne();
-    }
-
-    res.json({ message: "Profile deleted" });
+    res.status(405);
+    throw new Error("Profile deletion is disabled. Update the profile instead.");
   } catch (error) {
     next(error);
   }

@@ -316,7 +316,7 @@ const AdminDashboard = () => {
   const [emailMessage, setEmailMessage] = useState("");
   const [storageInfo, setStorageInfo] = useState({ dbMode: "unknown", persistent: false });
   const { logout, user } = useAuth();
-  const { profile, loading: profileLoading, error: profileContextError, saveProfile, deleteProfile, refreshProfile } = useProfile();
+  const { profile, loading: profileLoading, error: profileContextError, saveProfile, refreshProfile } = useProfile();
 
   const loadStorageInfo = async () => {
     try {
@@ -516,18 +516,6 @@ const AdminDashboard = () => {
       setProfileError(err.response?.data?.message || "Could not save profile");
     } finally {
       setProfileSaving(false);
-    }
-  };
-
-  const handleDeleteProfile = async () => {
-    if (!window.confirm("Delete profile?")) return;
-    try {
-      await deleteProfile();
-      setProfileDraft({ name: "", role: "", email: "", bio: "", linkedIn: "", phone: "", image: "", resume: "" });
-      await refreshProfile();
-      setEmailMessage("Profile deleted.");
-    } catch (err) {
-      setProfileError(err.response?.data?.message || "Could not delete profile");
     }
   };
 
@@ -937,7 +925,6 @@ const AdminDashboard = () => {
                 <button className="btn-primary" onClick={handleSaveProfile} disabled={profileSaving || profileLoading}>
                   {profileSaving ? "Saving..." : "Save profile"}
                 </button>
-                <button className="btn-secondary" onClick={handleDeleteProfile}>Delete profile</button>
               </div>
             </div>
           )}

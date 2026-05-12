@@ -53,13 +53,8 @@ export const ProfileProvider = ({ children }) => {
     return data;
   };
 
-  const deleteProfile = async () => {
-    await api.delete("/profile");
-    setProfile(null);
-  };
-
   const value = useMemo(
-    () => ({ profile, loading, error, refreshProfile: loadProfile, saveProfile, deleteProfile }),
+    () => ({ profile, loading, error, refreshProfile: loadProfile, saveProfile }),
     [profile, loading, error]
   );
 
