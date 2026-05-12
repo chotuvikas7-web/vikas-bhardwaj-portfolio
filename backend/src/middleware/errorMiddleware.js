@@ -19,6 +19,11 @@ export const errorHandler = (err, req, res, next) => {
       .join(", ");
   }
 
+  if (err.code === "LIMIT_FILE_SIZE") {
+    statusCode = 400;
+    message = "Uploaded file is too large. Maximum file size is 5MB.";
+  }
+
   res.status(statusCode).json({
     message,
     stack: process.env.NODE_ENV === "production" ? undefined : err.stack

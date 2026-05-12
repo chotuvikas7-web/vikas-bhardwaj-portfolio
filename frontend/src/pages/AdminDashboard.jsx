@@ -22,7 +22,7 @@ import {
   Plus
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
-import { api, imageUrl } from "../api/client";
+import { api, getApiErrorMessage, imageUrl } from "../api/client";
 import DataTable from "../components/DataTable";
 import ProjectForm from "../components/ProjectForm";
 import { useAuth } from "../context/AuthContext";
@@ -513,7 +513,7 @@ const AdminDashboard = () => {
       setEmailMessage("Profile updated successfully.");
       await refreshProfile();
     } catch (err) {
-      setProfileError(err.response?.data?.message || "Could not save profile");
+      setProfileError(getApiErrorMessage(err, "Could not save profile"));
     } finally {
       setProfileSaving(false);
     }

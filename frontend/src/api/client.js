@@ -61,6 +61,10 @@ export const imageUrl = (path) => {
 };
 
 export const getApiErrorMessage = (error, fallback = "Request failed") => {
+  if (error.response?.data?.errors?.length) {
+    return error.response.data.errors.map((item) => item.message).join(", ");
+  }
+
   if (error.response?.data?.message) return error.response.data.message;
   if (error.response?.status) return `${fallback} (HTTP ${error.response.status})`;
   if (error.request) return `${fallback}. Could not reach API at ${apiBaseUrl}.`;
