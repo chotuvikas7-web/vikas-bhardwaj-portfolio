@@ -7,9 +7,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dataFile = path.join(__dirname, "../../data/categories.json");
 
-const defaultCategories = ["Website", "Dashboard", "Full Stack", "Case Studies", "Brochure", "PPC Pages"];
+export const defaultCategoryNames = ["Website", "Dashboard", "Full Stack", "Case Studies", "Brochure", "PPC Pages"];
 
-const createDefaultCategories = () => defaultCategories.map((name) => ({ _id: randomUUID(), name }));
+const createDefaultCategories = () => defaultCategoryNames.map((name) => ({ _id: randomUUID(), name }));
 
 const ensureFile = async () => {
   await fs.mkdir(path.dirname(dataFile), { recursive: true });

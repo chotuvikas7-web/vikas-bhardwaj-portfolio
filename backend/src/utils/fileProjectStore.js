@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dataFile = path.join(__dirname, "../../data/projects.json");
 
-const sampleProjects = [
+export const defaultProjects = [
   {
     _id: "project-saas-analytics-dashboard",
     title: "SaaS Analytics Dashboard",
@@ -35,7 +35,7 @@ const sampleProjects = [
   {
     _id: "project-shaadi-souk",
     title: "Shaadi Souk",
-    description: "A matrimonial website built with modern UI technologies and responsive user journeys.",
+    description: "A matrimonial website built with modern UI technologies.",
     category: "Website",
     techStack: ["ReactJS", "NodeJs", "Express", "RestAPI"],
     githubLink: "",
@@ -47,7 +47,7 @@ const sampleProjects = [
   {
     _id: "project-virtual-employee",
     title: "Virtual Employee",
-    description: "An interactive platform for virtual employee services with responsive pages and polished content sections.",
+    description: "An interactive platform for virtual employee management with responsive design.",
     category: "Website",
     techStack: ["HTML", "Bootstrap", "Splide.js"],
     githubLink: "",
@@ -59,7 +59,7 @@ const sampleProjects = [
   {
     _id: "project-teckvalley-india",
     title: "TeckValley India",
-    description: "Company website showcasing services with modern UI sections, animations, and conversion-focused layouts.",
+    description: "Company website showcasing services with modern UI and animations.",
     category: "Website",
     techStack: ["HTML", "GSAP", "Bootstrap", "CSS"],
     githubLink: "",
@@ -71,7 +71,7 @@ const sampleProjects = [
   {
     _id: "project-teckvalley",
     title: "TeckValley",
-    description: "A company website with interactive elements, responsive structure, and product-focused design.",
+    description: "Portfolio website with interactive elements and product design.",
     category: "Website",
     techStack: ["HTML", "CSS", "JavaScript"],
     githubLink: "",
@@ -83,7 +83,7 @@ const sampleProjects = [
   {
     _id: "project-my-sage-dental",
     title: "My Sage Dental",
-    description: "Dental clinic website with user-friendly pages, service content, and responsive appointment-focused UI.",
+    description: "Dental clinic website with user-friendly interface and responsive design.",
     category: "Website",
     techStack: ["HTML", "Bootstrap", "JavaScript"],
     githubLink: "",
@@ -99,7 +99,7 @@ const ensureFile = async () => {
   try {
     await fs.access(dataFile);
   } catch {
-    await fs.writeFile(dataFile, JSON.stringify(sampleProjects, null, 2));
+    await fs.writeFile(dataFile, JSON.stringify(defaultProjects, null, 2));
   }
 };
 
@@ -108,10 +108,10 @@ export const readProjects = async () => {
   try {
     const content = await fs.readFile(dataFile, "utf8");
     const projects = JSON.parse(content);
-    return Array.isArray(projects) ? projects : sampleProjects;
+    return Array.isArray(projects) ? projects : defaultProjects;
   } catch (error) {
     console.warn(`Could not read projects file store, using defaults: ${error.message}`);
-    return sampleProjects;
+    return defaultProjects;
   }
 };
 
