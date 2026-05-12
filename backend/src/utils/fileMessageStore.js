@@ -20,8 +20,14 @@ const ensureFile = async () => {
 
 export const readMessages = async () => {
   await ensureFile();
-  const content = await fs.readFile(dataFile, "utf8");
-  return JSON.parse(content);
+  try {
+    const content = await fs.readFile(dataFile, "utf8");
+    const messages = JSON.parse(content);
+    return Array.isArray(messages) ? messages : sampleMessages;
+  } catch (error) {
+    console.warn(`Could not read messages file store, using defaults: ${error.message}`);
+    return sampleMessages;
+  }
 };
 
 export const writeMessages = async (messages) => {

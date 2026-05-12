@@ -53,7 +53,16 @@ api.interceptors.request.use((config) => {
 export const imageUrl = (path) => {
   if (!path) return "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80";
   if (path.startsWith("http")) return path;
+  if (!path.startsWith("/uploads/")) return path.startsWith("/") ? path : `/${path}`;
+
   const configuredUploadsUrl = import.meta.env.VITE_UPLOADS_URL;
   const base = configuredUploadsUrl ? normalizeUrl(configuredUploadsUrl) : apiBaseUrl.startsWith("http") ? new URL(apiBaseUrl).origin : "";
   return `${base}${path.startsWith("/") ? path : `/${path}`}`;
+};
+
+export const getApiErrorMessage = (error, fallback = "Request failed") => {
+  if (error.response?.data?.message) return error.response.data.message;
+  if (error.response?.status) return `${fallback} (HTTP ${error.response.status})`;
+  if (error.request) return `${fallback}. Could not reach API at ${apiBaseUrl}.`;
+  return error.message || fallback;
 };

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { api } from "../api/client";
+import { api, getApiErrorMessage } from "../api/client";
 import DataTable from "../components/DataTable";
 import PageShell from "../components/PageShell";
 import { imageUrl } from "../api/client";
@@ -22,10 +22,12 @@ const Projects = ({ embedded = false }) => {
     try {
       setLoading(true);
       setError("");
-      const { data } = await api.get("/projects");
+      const { data } = await api.get("/projects", {
+        params: { t: Date.now() }
+      });
       setProjects(data);
     } catch (err) {
-      setError(err.response?.data?.message || "Could not load projects. Check that the API server is running.");
+      setError(getApiErrorMessage(err, "Could not load projects"));
     } finally {
       setLoading(false);
     }
@@ -33,7 +35,9 @@ const Projects = ({ embedded = false }) => {
 
   const fetchCategories = async () => {
     try {
-      const { data } = await api.get("/categories");
+      const { data } = await api.get("/categories", {
+        params: { t: Date.now() }
+      });
       setCategories(["All", ...data.map((category) => category.name)]);
     } catch (err) {
       console.warn("Could not load categories", err);

@@ -28,8 +28,14 @@ const ensureFile = async () => {
 
 export const readProfile = async () => {
   await ensureFile();
-  const content = await fs.readFile(dataFile, "utf8");
-  return JSON.parse(content);
+  try {
+    const content = await fs.readFile(dataFile, "utf8");
+    const profile = JSON.parse(content);
+    return profile && typeof profile === "object" ? { ...defaultProfile, ...profile } : defaultProfile;
+  } catch (error) {
+    console.warn(`Could not read profile file store, using defaults: ${error.message}`);
+    return defaultProfile;
+  }
 };
 
 export const writeProfile = async (profile) => {

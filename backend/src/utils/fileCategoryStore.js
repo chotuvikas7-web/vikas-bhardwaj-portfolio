@@ -22,9 +22,14 @@ const ensureFile = async () => {
 
 export const readCategories = async () => {
   await ensureFile();
-  const content = await fs.readFile(dataFile, "utf8");
-  const categories = JSON.parse(content);
-  return Array.isArray(categories) ? categories : createDefaultCategories();
+  try {
+    const content = await fs.readFile(dataFile, "utf8");
+    const categories = JSON.parse(content);
+    return Array.isArray(categories) ? categories : createDefaultCategories();
+  } catch (error) {
+    console.warn(`Could not read categories file store, using defaults: ${error.message}`);
+    return createDefaultCategories();
+  }
 };
 
 export const writeCategories = async (categories) => {

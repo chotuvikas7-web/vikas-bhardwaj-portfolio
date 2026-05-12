@@ -105,9 +105,14 @@ const ensureFile = async () => {
 
 export const readProjects = async () => {
   await ensureFile();
-  const content = await fs.readFile(dataFile, "utf8");
-  const projects = JSON.parse(content);
-  return Array.isArray(projects) ? projects : sampleProjects;
+  try {
+    const content = await fs.readFile(dataFile, "utf8");
+    const projects = JSON.parse(content);
+    return Array.isArray(projects) ? projects : sampleProjects;
+  } catch (error) {
+    console.warn(`Could not read projects file store, using defaults: ${error.message}`);
+    return sampleProjects;
+  }
 };
 
 export const writeProjects = async (projects) => {

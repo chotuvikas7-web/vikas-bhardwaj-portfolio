@@ -1,7 +1,17 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import Profile from "../models/Profile.js";
 import { readProfile, writeProfile } from "../utils/fileProfileStore.js";
 
 const profileFields = ["name", "role", "email", "bio", "linkedIn", "phone", "image", "resume"];
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadsPath = path.join(__dirname, "../../uploads");
+const defaultProfileAssets = {
+  image: "/uploads/profile-photo.jpg",
+  resume: "/uploads/vikas-resume.pdf"
+};
 
 const normalizeProfile = (body, existing = {}) =>
   profileFields.reduce((profile, field) => {
@@ -10,17 +20,37 @@ const normalizeProfile = (body, existing = {}) =>
     return profile;
   }, {});
 
+const uploadExists = (assetPath) => {
+  if (!assetPath?.startsWith("/uploads/")) return true;
+  const filename = path.basename(assetPath);
+  return fs.existsSync(path.join(uploadsPath, filename));
+};
+
+const withAvailableProfileAssets = (profile) => {
+  const payload = profile?.toObject ? profile.toObject() : { ...(profile || {}) };
+
+  if (!payload.image || !uploadExists(payload.image)) {
+    payload.image = defaultProfileAssets.image;
+  }
+
+  if (!payload.resume || !uploadExists(payload.resume)) {
+    payload.resume = defaultProfileAssets.resume;
+  }
+
+  return payload;
+};
+
 export const getProfile = async (req, res, next) => {
   try {
     res.set("Cache-Control", "no-store");
 
     if (process.env.DB_MODE === "file") {
       const profile = await readProfile();
-      return res.json(profile || {});
+      return res.json(withAvailableProfileAssets(profile));
     }
 
     const profile = await Profile.findOne().sort({ updatedAt: -1 });
-    res.json(profile || {});
+    res.json(withAvailableProfileAssets(profile));
   } catch (error) {
     next(error);
   }
