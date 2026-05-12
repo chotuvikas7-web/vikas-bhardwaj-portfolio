@@ -1,12 +1,24 @@
 import User from "../models/User.js";
 import { generateToken } from "../utils/generateToken.js";
 
+const normalizeEmail = (email) => (typeof email === "string" ? email.trim().toLowerCase() : "");
+const normalizePassword = (password) => (typeof password === "string" ? password.trim() : "");
+
 export const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const email = normalizeEmail(req.body.email);
+    const password = normalizePassword(req.body.password);
 
     if (process.env.DB_MODE === "file") {
-      const isAdmin = email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD;
+      const adminEmail = normalizeEmail(process.env.ADMIN_EMAIL);
+      const adminPassword = normalizePassword(process.env.ADMIN_PASSWORD);
+
+      if (!adminEmail || !adminPassword) {
+        res.status(500);
+        throw new Error("Admin credentials are not configured on the server.");
+      }
+
+      const isAdmin = email === adminEmail && password === adminPassword;
       if (!isAdmin) {
         res.status(401);
         throw new Error("Invalid email or password");
@@ -15,7 +27,7 @@ export const login = async (req, res, next) => {
       const user = {
         _id: "local-admin",
         name: process.env.ADMIN_NAME || "Admin",
-        email: process.env.ADMIN_EMAIL,
+        email: adminEmail,
         role: "admin"
       };
 

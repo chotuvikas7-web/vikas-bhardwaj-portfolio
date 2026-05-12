@@ -3,8 +3,8 @@ import User from "../models/User.js";
 export const ensureAdmin = async () => {
   if (process.env.DB_MODE === "file") return;
 
-  const email = process.env.ADMIN_EMAIL;
-  const password = process.env.ADMIN_PASSWORD;
+  const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const password = process.env.ADMIN_PASSWORD?.trim();
 
   if (!email || !password) {
     console.warn("ADMIN_EMAIL or ADMIN_PASSWORD is missing; admin auto-seed skipped.");

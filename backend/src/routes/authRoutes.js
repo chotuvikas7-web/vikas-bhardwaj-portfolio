@@ -9,8 +9,8 @@ const router = express.Router();
 router.post(
   "/login",
   [
-    body("email").isEmail().withMessage("Enter a valid email"),
-    body("password").notEmpty().withMessage("Password is required")
+    body("email").trim().toLowerCase().isEmail().withMessage("Enter a valid email"),
+    body("password").trim().notEmpty().withMessage("Password is required")
   ],
   validate,
   login

@@ -5,6 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import AnimatedScene from "../components/AnimatedScene";
+import { getApiErrorMessage } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 
 const AdminLogin = () => {
@@ -16,10 +17,10 @@ const AdminLogin = () => {
   const submit = async ({ email, password }) => {
     try {
       setError("");
-      await login(email, password);
+      await login(email.trim(), password);
       navigate("/admin");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(getApiErrorMessage(err, "Login failed"));
     }
   };
 
