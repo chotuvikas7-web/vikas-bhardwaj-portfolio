@@ -6,6 +6,8 @@ backend/data/*.json
 !backend/data/.gitkeep
 backend/uploads/*
 !backend/uploads/.gitkeep
+!backend/uploads/profile-photo.jpg
+!backend/uploads/vikas-resume.pdf
 *.log
 npm-debug.log*
 .DS_Store

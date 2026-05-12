@@ -13,8 +13,8 @@ const defaultProfile = {
   bio: "I am a UI developer with 6+ years of experience building responsive, polished web interfaces with HTML, CSS, Bootstrap, JavaScript, React, Tailwind CSS, and modern animation libraries.",
   linkedIn: "",
   phone: "Remote and hybrid friendly",
-  image: "",
-  resume: ""
+  image: "/uploads/profile-photo.jpg",
+  resume: "/uploads/vikas-resume.pdf"
 };
 
 const ensureFile = async () => {

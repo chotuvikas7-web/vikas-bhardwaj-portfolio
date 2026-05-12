@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Download, FileText, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
@@ -8,6 +8,7 @@ import { useProfile } from "../context/ProfileContext.jsx";
 
 const Home = () => {
   const { profile } = useProfile();
+  const [profileImageFailed, setProfileImageFailed] = useState(false);
   const name = profile?.name || "Vikas Bhardwaj";
   const role = profile?.role || "UI Developer";
   const bio =
@@ -22,6 +23,10 @@ const Home = () => {
     .map((part) => part[0])
     .join("")
     .toUpperCase();
+
+  useEffect(() => {
+    setProfileImageFailed(false);
+  }, [profileImage]);
 
   return (
     <>
@@ -107,8 +112,8 @@ const Home = () => {
               transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
               className="relative aspect-square w-[72%] overflow-hidden rounded-full border-4 border-white/80 bg-slate-900 shadow-2xl shadow-slate-400/40 dark:border-white/50 dark:shadow-cyan-950/40"
             >
-              {profileImage ? (
-                <img src={profileImage} alt={name} className="h-full w-full object-cover" />
+              {profileImage && !profileImageFailed ? (
+                <img src={profileImage} alt={name} className="h-full w-full object-cover" onError={() => setProfileImageFailed(true)} />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-emerald-300 text-6xl font-black text-slate-950">
                   {initials || "VB"}
