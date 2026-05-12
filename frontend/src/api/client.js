@@ -1,13 +1,22 @@
 import axios from "axios";
 
 const normalizeUrl = (url) => url.replace(/\/+$/, "");
+const renderBackendHost = "vikas-bhardwaj-portfolio.onrender.com";
 
 const getRenderBackendUrl = () => {
   if (typeof window === "undefined") return "";
 
   const { protocol, hostname } = window.location;
+  if (hostname === renderBackendHost) {
+    return "";
+  }
+
   if (hostname.endsWith("-ui.onrender.com")) {
     return `${protocol}//${hostname.replace("-ui.onrender.com", ".onrender.com")}/api`;
+  }
+
+  if (hostname.endsWith(".onrender.com")) {
+    return `${protocol}//${renderBackendHost}/api`;
   }
 
   return "";

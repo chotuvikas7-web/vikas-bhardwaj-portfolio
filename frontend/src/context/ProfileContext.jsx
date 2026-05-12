@@ -12,7 +12,9 @@ export const ProfileProvider = ({ children }) => {
     try {
       setLoading(true);
       setError("");
-      const { data } = await api.get("/profile");
+      const { data } = await api.get("/profile", {
+        params: { t: Date.now() }
+      });
       setProfile(data || null);
     } catch (err) {
       setError(err.response?.data?.message || "Could not load profile");

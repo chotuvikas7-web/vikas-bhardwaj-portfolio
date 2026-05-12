@@ -12,6 +12,8 @@ const normalizeProfile = (body, existing = {}) =>
 
 export const getProfile = async (req, res, next) => {
   try {
+    res.set("Cache-Control", "no-store");
+
     if (process.env.DB_MODE === "file") {
       const profile = await readProfile();
       return res.json(profile || {});
