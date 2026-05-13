@@ -22,39 +22,10 @@ if (process.env.NODE_ENV === "production" && fs.existsSync(frontendDistPath)) {
 }
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
-const allowedOrigins = [
-  process.env.CLIENT_URL,
-  process.env.RENDER_EXTERNAL_URL,
-  ...(process.env.FRONTEND_ORIGINS || "").split(","),
-  "https://vikas-bhardwaj-portfolio-ui.onrender.com",
-  "https://vikas-bhardwaj-portfolio.onrender.com",
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
-  "http://localhost:4173",
-  "http://127.0.0.1:4173"
-].filter(Boolean).map((origin) => origin.trim());
-
-const isAllowedOrigin = (origin) => {
-  if (!origin) return true;
-  if (allowedOrigins.includes(origin)) return true;
-
-  try {
-    const { protocol, hostname } = new URL(origin);
-    return protocol === "https:" && hostname.endsWith(".onrender.com");
-  } catch {
-    return false;
-  }
-};
-
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (isAllowedOrigin(origin)) {
-        return callback(null, true);
-      }
-      callback(new Error(`CORS origin denied: ${origin}`));
-    },
-    credentials: true
+    origin: true,
+    credentials: false
   })
 );
 app.use(express.json());
