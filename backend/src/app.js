@@ -21,7 +21,22 @@ if (process.env.NODE_ENV === "production" && fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
 }
 
-app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+const connectSrc = ["'self'", "https://vikas-bhardwaj-portfolio.onrender.com"];
+
+if (process.env.CLIENT_URL) {
+  connectSrc.push(process.env.CLIENT_URL.replace(/\/+$/, ""));
+}
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        connectSrc
+      }
+    },
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+  })
+);
 app.use(
   cors({
     origin: true,
