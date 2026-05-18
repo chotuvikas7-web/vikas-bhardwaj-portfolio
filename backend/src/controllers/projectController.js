@@ -42,7 +42,7 @@ export const getProjects = async (req, res, next) => {
       return res.json(projects);
     }
 
-    const projects = await Project.find().sort({ createdAt: -1 });
+    const projects = await Project.find().sort({ createdAt: -1 }).allowDiskUse(true);
     res.json(projects);
   } catch (error) {
     next(error);

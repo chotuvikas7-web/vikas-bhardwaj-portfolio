@@ -48,4 +48,7 @@ const projectSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+projectSchema.index({ createdAt: -1 });
+projectSchema.index({ category: 1, createdAt: -1 });
+
 export default mongoose.model("Project", projectSchema);

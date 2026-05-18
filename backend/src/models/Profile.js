@@ -43,4 +43,6 @@ const profileSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+profileSchema.index({ updatedAt: -1 });
+
 export default mongoose.model("Profile", profileSchema);

@@ -1,4 +1,5 @@
 import Category from "../models/Category.js";
+import Message from "../models/Message.js";
 import Profile from "../models/Profile.js";
 import Project from "../models/Project.js";
 import { defaultCategoryNames } from "./fileCategoryStore.js";
@@ -9,6 +10,8 @@ const stripFileStoreFields = ({ _id, createdAt, updatedAt, ...payload }) => payl
 
 export const ensureDefaultContent = async () => {
   if (process.env.DB_MODE === "file") return;
+
+  await Promise.all([Category.createIndexes(), Message.createIndexes(), Profile.createIndexes(), Project.createIndexes()]);
 
   const existingCategories = await Category.find({}, { name: 1 }).lean();
   const categoryNames = new Set(existingCategories.map((category) => category.name.toLowerCase()));
