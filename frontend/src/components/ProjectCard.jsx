@@ -10,7 +10,7 @@ const ProjectCard = ({ project }) => (
       <img
         src={imageUrl(project.image)}
         alt={project.title}
-        className="h-full w-full object-cover"
+        className="h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-[1.05]"
         onError={(event) => {
           event.currentTarget.src = fallbackProjectImage;
         }}
