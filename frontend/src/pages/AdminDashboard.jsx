@@ -49,6 +49,39 @@ const initialEmailTemplates = [
   { id: 2, subject: "Monthly Report", recipient: "team@example.com", body: "Here is your monthly project report." }
 ];
 
+const emptyProjectDraft = {
+  title: "",
+  description: "",
+  category: "",
+  techStack: "",
+  githubLink: "",
+  liveLink: "",
+  image: ""
+};
+
+const projectDraftStorageKey = "admin_project_draft";
+
+const getStoredProjectDraft = () => {
+  if (typeof window === "undefined") return emptyProjectDraft;
+
+  try {
+    const stored = window.localStorage.getItem(projectDraftStorageKey);
+    return stored ? { ...emptyProjectDraft, ...JSON.parse(stored) } : emptyProjectDraft;
+  } catch {
+    return emptyProjectDraft;
+  }
+};
+
+const projectToDraft = (project) => ({
+  title: project?.title || "",
+  description: project?.description || "",
+  category: project?.category || "",
+  techStack: project?.techStack?.join(", ") || "",
+  githubLink: project?.githubLink || "",
+  liveLink: project?.liveLink || "",
+  image: project?.image || ""
+});
+
 const chartBaseOptions = {
   backgroundColor: "transparent",
   animation: {
@@ -301,6 +334,8 @@ const AdminDashboard = () => {
   const [categoryName, setCategoryName] = useState("");
   const [categoryError, setCategoryError] = useState("");
   const [selectedProject, setSelectedProject] = useState(null);
+  const [projectDraft, setProjectDraft] = useState(getStoredProjectDraft);
+  const [projectImageFile, setProjectImageFile] = useState(null);
   const [profileDraft, setProfileDraft] = useState({ name: "", role: "", email: "", bio: "", linkedIn: "", phone: "", image: "", resume: "" });
   const [profileImageFile, setProfileImageFile] = useState(null);
   const [profileResumeFile, setProfileResumeFile] = useState(null);
@@ -373,6 +408,11 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
+    if (selectedProject) return;
+    window.localStorage.setItem(projectDraftStorageKey, JSON.stringify(projectDraft));
+  }, [projectDraft, selectedProject]);
+
+  useEffect(() => {
     if (profile) {
       setProfileDraft({
         name: profile.name || "",
@@ -424,12 +464,15 @@ const AdminDashboard = () => {
         await api.put(`/projects/${selectedProject._id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" }
         });
+        setSelectedProject(null);
+        setProjectDraft(getStoredProjectDraft());
+        setProjectImageFile(null);
       } else {
-        await api.post("/projects", formData, {
+        const { data } = await api.post("/projects", formData, {
           headers: { "Content-Type": "multipart/form-data" }
         });
+        setProjectDraft(projectToDraft(data));
       }
-      setSelectedProject(null);
       await loadProjects();
     } catch (err) {
       setProjectError(err.response?.data?.message || "Could not save project");
@@ -447,6 +490,27 @@ const AdminDashboard = () => {
     } catch (err) {
       setProjectError(err.response?.data?.message || "Could not delete project");
     }
+  };
+
+  const handleEditProject = (project) => {
+    setSelectedProject(project);
+    setProjectDraft(projectToDraft(project));
+    setProjectImageFile(null);
+    setActiveSection("projects");
+  };
+
+  const handleCancelProjectEdit = () => {
+    setSelectedProject(null);
+    setProjectDraft(getStoredProjectDraft());
+    setProjectImageFile(null);
+  };
+
+  const handleClearProjectForm = () => {
+    setSelectedProject(null);
+    setProjectDraft(emptyProjectDraft);
+    setProjectImageFile(null);
+    setProjectError("");
+    window.localStorage.removeItem(projectDraftStorageKey);
   };
 
   const handleAddCategory = async () => {
@@ -547,7 +611,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const categoryNames = categories.map((category) => category.name);
+  const categoryNames = useMemo(() => categories.map((category) => category.name), [categories]);
   const profileImageSrc = profileImagePreview || profile?.image || "";
   const profileImageSrcFinal =
     profileImageSrc && (profileImageSrc.startsWith("http") || profileImageSrc.startsWith("blob:"))
@@ -582,7 +646,7 @@ const AdminDashboard = () => {
       sortable: false,
       render: (project) => (
         <div className="flex gap-2">
-          <button className="btn-secondary px-3 py-2 text-xs" onClick={() => setSelectedProject(project)}>
+          <button className="btn-secondary px-3 py-2 text-xs" onClick={() => handleEditProject(project)}>
             <Pencil className="h-4 w-4" /> Edit
           </button>
           <button className="btn-secondary border-rose-200 px-3 py-2 text-xs text-rose-700 hover:border-rose-300 dark:border-rose-900 dark:text-rose-200" onClick={() => handleDeleteProject(project)}>
@@ -772,8 +836,7 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {activeSection === "projects" && (
-            <div className="space-y-6">
+          <div className={activeSection === "projects" ? "space-y-6" : "hidden"}>
               <div className="border border-slate-200 bg-white p-6 shadow-soft dark:border-slate-800 dark:bg-slate-950/90">
                 <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
                   <div>
@@ -788,9 +851,14 @@ const AdminDashboard = () => {
 
               <ProjectForm
                 initialProject={selectedProject}
+                values={projectDraft}
+                onChange={setProjectDraft}
+                imageFile={projectImageFile}
+                onImageFileChange={setProjectImageFile}
                 onSubmit={handleSaveProject}
                 isSaving={projectSaving}
-                onCancel={() => setSelectedProject(null)}
+                onCancel={handleCancelProjectEdit}
+                onClear={handleClearProjectForm}
                 categories={categoryNames}
               />
 
@@ -799,8 +867,7 @@ const AdminDashboard = () => {
               ) : (
                 <DataTable columns={projectColumns} rows={projects} emptyMessage="No projects yet." searchPlaceholder="Search projects..." {...adminTableProps} />
               )}
-            </div>
-          )}
+          </div>
 
           {activeSection === "categories" && (
             <div className="space-y-6">

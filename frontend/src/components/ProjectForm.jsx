@@ -1,63 +1,54 @@
-import React from "react";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
 
-const ProjectForm = ({ initialProject, onSubmit, isSaving, onCancel, categories = [] }) => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors }
-  } = useForm({
-    defaultValues: {
-      title: "",
-      description: "",
-      category: "",
-      techStack: "",
-      githubLink: "",
-      liveLink: "",
-      image: ""
+const ProjectForm = ({ initialProject, values, onChange, imageFile, onImageFileChange, onSubmit, isSaving, onCancel, onClear, categories = [] }) => {
+  const [errors, setErrors] = useState({});
+  const hasDraftValues = Object.values(values).some((value) => String(value || "").trim());
+
+  const updateField = (field) => (event) => {
+    onChange({ ...values, [field]: event.target.value });
+    if (errors[field]) {
+      setErrors((current) => ({ ...current, [field]: "" }));
     }
-  });
+  };
 
-  useEffect(() => {
-    reset({
-      title: initialProject?.title || "",
-      description: initialProject?.description || "",
-      category: initialProject?.category || categories[0] || "",
-      techStack: initialProject?.techStack?.join(", ") || "",
-      githubLink: initialProject?.githubLink || "",
-      liveLink: initialProject?.liveLink || "",
-      image: initialProject?.image || ""
-    });
-  }, [initialProject, reset, categories]);
+  const submit = (event) => {
+    event.preventDefault();
+    const nextErrors = {};
+    if (!values.title.trim()) nextErrors.title = "Title is required";
+    if (!values.techStack.trim()) nextErrors.techStack = "Tech stack is required";
+    if (!values.category.trim()) nextErrors.category = "Category is required";
+    if (!values.description.trim()) nextErrors.description = "Description is required";
 
-  const submit = (values) => {
+    if (Object.keys(nextErrors).length) {
+      setErrors(nextErrors);
+      return;
+    }
+
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
-      if (key !== "imageFile") formData.append(key, value || "");
+      formData.append(key, value || "");
     });
-    if (values.imageFile?.[0]) formData.append("imageFile", values.imageFile[0]);
+    if (imageFile) formData.append("imageFile", imageFile);
     onSubmit(formData);
   };
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 text-slate-900 shadow-soft dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100">
+    <form onSubmit={submit} className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 text-slate-900 shadow-soft dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100">
       <div className="grid gap-4 md:grid-cols-2">
         <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
           <span>Title</span>
-          <input className="input" {...register("title", { required: "Title is required" })} />
-          {errors.title && <small className="text-red-600">{errors.title.message}</small>}
+          <input className="input" value={values.title} onChange={updateField("title")} />
+          {errors.title && <small className="text-red-600">{errors.title}</small>}
         </label>
         <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
           <span>Tech stack</span>
-          <input className="input" placeholder="React, Node, MongoDB" {...register("techStack", { required: "Tech stack is required" })} />
-          {errors.techStack && <small className="text-red-600">{errors.techStack.message}</small>}
+          <input className="input" placeholder="React, Node, MongoDB" value={values.techStack} onChange={updateField("techStack")} />
+          {errors.techStack && <small className="text-red-600">{errors.techStack}</small>}
         </label>
       </div>
       <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
         <span>Category</span>
-        <select className="input h-12" {...register("category", { required: "Category is required" })}>
+        <select className="input h-12" value={values.category} onChange={updateField("category")}>
           <option value="">Select category</option>
           {categories.map((category) => (
             <option key={category} value={category}>
@@ -65,33 +56,39 @@ const ProjectForm = ({ initialProject, onSubmit, isSaving, onCancel, categories 
             </option>
           ))}
         </select>
-        {errors.category && <small className="text-red-600">{errors.category.message}</small>}
+        {errors.category && <small className="text-red-600">{errors.category}</small>}
       </label>
       <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
         <span>Description</span>
-        <textarea className="input min-h-28" {...register("description", { required: "Description is required" })} />
-        {errors.description && <small className="text-red-600">{errors.description.message}</small>}
+        <textarea className="input min-h-28" value={values.description} onChange={updateField("description")} />
+        {errors.description && <small className="text-red-600">{errors.description}</small>}
       </label>
       <div className="grid gap-4 md:grid-cols-2">
         <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
           <span>GitHub link</span>
-          <input className="input" type="url" {...register("githubLink")} />
+          <input className="input" type="url" value={values.githubLink} onChange={updateField("githubLink")} />
         </label>
         <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
           <span>Live link</span>
-          <input className="input" type="url" {...register("liveLink")} />
+          <input className="input" type="url" value={values.liveLink} onChange={updateField("liveLink")} />
         </label>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
           <span>Image URL</span>
-          <input className="input" {...register("image")} />
+          <input className="input" value={values.image} onChange={updateField("image")} />
         </label>
         <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
           <span>Upload image</span>
-          <input className="input file:mr-3 file:rounded-md file:border-0 file:bg-slate-950 file:px-3 file:py-1.5 file:text-white dark:file:bg-emerald-400 dark:file:text-slate-950" type="file" accept="image/*" {...register("imageFile")} />
+          <input
+            className="input file:mr-3 file:rounded-md file:border-0 file:bg-slate-950 file:px-3 file:py-1.5 file:text-white dark:file:bg-emerald-400 dark:file:text-slate-950"
+            type="file"
+            accept="image/*"
+            onChange={(event) => onImageFileChange(event.target.files?.[0] || null)}
+          />
         </label>
       </div>
+      {imageFile && <p className="text-sm text-slate-600 dark:text-slate-400">Selected image: {imageFile.name}</p>}
       <div className="flex flex-wrap gap-3">
         <button className="btn-primary" type="submit" disabled={isSaving}>
           {isSaving ? "Saving..." : initialProject ? "Update project" : "Add project"}
@@ -99,6 +96,11 @@ const ProjectForm = ({ initialProject, onSubmit, isSaving, onCancel, categories 
         {initialProject && (
           <button className="btn-secondary" type="button" onClick={onCancel}>
             Cancel edit
+          </button>
+        )}
+        {!initialProject && hasDraftValues && (
+          <button className="btn-secondary" type="button" onClick={onClear}>
+            Clear form
           </button>
         )}
       </div>
