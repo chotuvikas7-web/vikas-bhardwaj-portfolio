@@ -10,6 +10,8 @@ import PageShell from "../components/PageShell";
 import { imageUrl } from "../api/client";
 import ProjectCard from "../components/ProjectCard";
 
+const initialProjectCount = 6;
+const projectLoadStep = 3;
 const categoryPriority = (category) => (category === "Website" ? 0 : 1);
 const sortWebsiteFirst = (items) =>
   [...items].sort((a, b) => {
@@ -23,6 +25,7 @@ const Projects = ({ embedded = false }) => {
   const [categories, setCategories] = useState(["All"]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [viewMode, setViewMode] = useState("grid");
+  const [visibleCount, setVisibleCount] = useState(initialProjectCount);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -60,10 +63,16 @@ const Projects = ({ embedded = false }) => {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    setVisibleCount(initialProjectCount);
+  }, [activeCategory, viewMode, projects.length]);
+
   const sortedProjects = useMemo(() => sortWebsiteFirst(projects), [projects]);
-  const visibleProjects = embedded
+  const filteredProjects = embedded
     ? sortedProjects.slice(0, 3)
     : sortedProjects.filter((project) => activeCategory === "All" || project.category === activeCategory);
+  const visibleProjects = embedded ? filteredProjects : filteredProjects.slice(0, visibleCount);
+  const hasMoreProjects = !embedded && visibleProjects.length < filteredProjects.length;
   const projectColumns = [
     {
       key: "title",
@@ -215,15 +224,29 @@ const Projects = ({ embedded = false }) => {
         )}
 
         {!loading && !error && projects.length > 0 && (
-          viewMode === "grid" ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {visibleProjects.map((project) => (
-                <ProjectCard key={project._id} project={project} />
-              ))}
-            </div>
-          ) : (
-            <DataTable columns={projectColumns} rows={visibleProjects} emptyMessage="No projects match this category." />
-          )
+          <>
+            {viewMode === "grid" ? (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {visibleProjects.map((project) => (
+                  <ProjectCard key={project._id} project={project} />
+                ))}
+              </div>
+            ) : (
+              <DataTable columns={projectColumns} rows={visibleProjects} emptyMessage="No projects match this category." />
+            )}
+
+            {hasMoreProjects && (
+              <div className="mt-10 flex justify-center">
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center rounded-md border border-cyan-200/35 bg-cyan-100/10 px-6 py-3 text-sm font-bold text-slate-950 shadow-[0_0_24px_rgba(34,211,238,0.12)] transition hover:border-cyan-300 hover:bg-cyan-100/20 dark:text-cyan-50"
+                  onClick={() => setVisibleCount((count) => count + projectLoadStep)}
+                >
+                  Load more
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </>
