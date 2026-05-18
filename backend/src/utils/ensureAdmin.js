@@ -11,8 +11,26 @@ export const ensureAdmin = async () => {
     return;
   }
 
-  const existing = await User.findOne({ email });
+  const existing = await User.findOne({ email }).select("+password");
   if (existing) {
+    let changed = false;
+
+    if (process.env.ADMIN_NAME && existing.name !== process.env.ADMIN_NAME) {
+      existing.name = process.env.ADMIN_NAME;
+      changed = true;
+    }
+
+    if (!(await existing.comparePassword(password))) {
+      existing.password = password;
+      changed = true;
+    }
+
+    if (changed) {
+      await existing.save();
+      console.log(`Admin updated: ${email}`);
+      return;
+    }
+
     console.log(`Admin ready: ${email}`);
     return;
   }
