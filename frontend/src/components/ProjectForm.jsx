@@ -27,6 +27,9 @@ const ProjectForm = ({ initialProject, values, onChange, imageFile, onImageFileC
     onImageFileChange(file);
     if (file) {
       onChange({ ...values, image: "" });
+      if (errors.imageFile) {
+        setErrors((current) => ({ ...current, imageFile: "" }));
+      }
     }
   };
 
@@ -37,6 +40,7 @@ const ProjectForm = ({ initialProject, values, onChange, imageFile, onImageFileC
     if (!values.techStack.trim()) nextErrors.techStack = "Tech stack is required";
     if (!values.category.trim()) nextErrors.category = "Category is required";
     if (!values.description.trim()) nextErrors.description = "Description is required";
+    if (!initialProject && !imageFile) nextErrors.imageFile = "Project image is required";
 
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors);
@@ -92,22 +96,17 @@ const ProjectForm = ({ initialProject, values, onChange, imageFile, onImageFileC
           <input className="input" type="url" value={values.liveLink} onChange={updateField("liveLink")} />
         </label>
       </div>
-      <div className="grid gap-4 md:grid-cols-2">
-        <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
-          <span>Image URL</span>
-          <input className="input" value={values.image} onChange={updateField("image")} />
-        </label>
-        <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
-          <span>Upload image</span>
-          <input
-            ref={fileInputRef}
-            className="input file:mr-3 file:rounded-md file:border-0 file:bg-slate-950 file:px-3 file:py-1.5 file:text-white dark:file:bg-emerald-400 dark:file:text-slate-950"
-            type="file"
-            accept="image/*"
-            onChange={(event) => updateImageFile(event.target.files?.[0] || null)}
-          />
-        </label>
-      </div>
+      <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
+        <span>Upload image</span>
+        <input
+          ref={fileInputRef}
+          className="input file:mr-3 file:rounded-md file:border-0 file:bg-slate-950 file:px-3 file:py-1.5 file:text-white dark:file:bg-emerald-400 dark:file:text-slate-950"
+          type="file"
+          accept="image/*"
+          onChange={(event) => updateImageFile(event.target.files?.[0] || null)}
+        />
+        {errors.imageFile && <small className="text-red-600">{errors.imageFile}</small>}
+      </label>
       {imageFile && <p className="text-sm text-slate-600 dark:text-slate-400">Selected image: {imageFile.name}</p>}
       <div className="flex flex-wrap gap-3">
         <button className="btn-primary" type="submit" disabled={isSaving}>

@@ -409,7 +409,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (selectedProject) return;
-    window.localStorage.setItem(projectDraftStorageKey, JSON.stringify(projectDraft));
+    window.localStorage.setItem(projectDraftStorageKey, JSON.stringify({ ...projectDraft, image: "" }));
   }, [projectDraft, selectedProject]);
 
   useEffect(() => {

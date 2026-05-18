@@ -53,6 +53,7 @@ api.interceptors.request.use((config) => {
 
 export const imageUrl = (path) => {
   if (!path) return fallbackProjectImage;
+  if (path.startsWith("data:")) return path;
   if (path.startsWith("http")) return path;
   if (!path.startsWith("/uploads/")) return path.startsWith("/") ? path : `/${path}`;
 

@@ -1,3 +1,4 @@
+import fs from "fs/promises";
 import Project from "../models/Project.js";
 import {
   createFileProject,
@@ -15,6 +16,14 @@ const normalizeTechStack = (techStack) => {
       .filter(Boolean);
   }
   return [];
+};
+
+const uploadedImageToDataUrl = async (file) => {
+  if (!file) return "";
+
+  const buffer = await fs.readFile(file.path);
+  await fs.unlink(file.path).catch(() => {});
+  return `data:${file.mimetype};base64,${buffer.toString("base64")}`;
 };
 
 export const getProjects = async (req, res, next) => {
@@ -58,7 +67,7 @@ export const getProject = async (req, res, next) => {
 
 export const createProject = async (req, res, next) => {
   try {
-    const image = req.file ? `/uploads/${req.file.filename}` : req.body.image;
+    const image = req.file ? await uploadedImageToDataUrl(req.file) : req.body.image;
     const payload = {
       ...req.body,
       category: typeof req.body.category === "string" ? req.body.category.trim() : "Website",
@@ -83,7 +92,7 @@ export const createProject = async (req, res, next) => {
 
 export const updateProject = async (req, res, next) => {
   try {
-    const image = req.file ? `/uploads/${req.file.filename}` : req.body.image;
+    const image = req.file ? await uploadedImageToDataUrl(req.file) : req.body.image;
     const updates = {
       ...req.body,
       techStack: normalizeTechStack(req.body.techStack),
