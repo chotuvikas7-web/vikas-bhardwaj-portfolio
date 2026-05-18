@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Message from "../models/Message.js";
 import { createMessage as createFileMessage, readMessages, writeMessages } from "../utils/fileMessageStore.js";
 import { sendAutoReply } from "../utils/emailTransport.js";
@@ -91,6 +92,11 @@ export const deleteMessage = async (req, res, next) => {
       }
       await writeMessages(filtered);
       return res.json({ message: "Message deleted" });
+    }
+
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      res.status(404);
+      throw new Error("Message not found");
     }
 
     const message = await Message.findByIdAndDelete(req.params.id);

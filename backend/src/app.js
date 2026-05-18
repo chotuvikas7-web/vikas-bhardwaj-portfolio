@@ -31,7 +31,8 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        connectSrc
+        connectSrc,
+        imgSrc: ["'self'", "data:", "https:"]
       }
     },
     crossOriginResourcePolicy: { policy: "cross-origin" }

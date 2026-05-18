@@ -461,11 +461,19 @@ const AdminDashboard = () => {
       setProjectSaving(true);
       setProjectError("");
       if (selectedProject) {
-        const { data } = await api.put(`/projects/${selectedProject._id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" }
-        });
+        let response;
+        try {
+          response = await api.put(`/projects/${selectedProject._id}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+          });
+        } catch (err) {
+          if (err.response?.status !== 404) throw err;
+          response = await api.post("/projects", formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+          });
+        }
         setSelectedProject(null);
-        setProjectDraft(projectToDraft(data));
+        setProjectDraft(projectToDraft(response.data));
         setProjectImageFile(null);
       } else {
         const { data } = await api.post("/projects", formData, {

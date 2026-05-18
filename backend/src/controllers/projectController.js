@@ -1,4 +1,5 @@
 import fs from "fs/promises";
+import mongoose from "mongoose";
 import Project from "../models/Project.js";
 import {
   createFileProject,
@@ -24,6 +25,14 @@ const uploadedImageToDataUrl = async (file) => {
   const buffer = await fs.readFile(file.path);
   await fs.unlink(file.path).catch(() => {});
   return `data:${file.mimetype};base64,${buffer.toString("base64")}`;
+};
+
+const ensureValidProjectId = (id) => {
+  if (!mongoose.isValidObjectId(id)) {
+    const error = new Error("Project not found. Refresh the project list and try again.");
+    error.statusCode = 404;
+    throw error;
+  }
 };
 
 export const getProjects = async (req, res, next) => {
@@ -53,6 +62,7 @@ export const getProject = async (req, res, next) => {
       return res.json(project);
     }
 
+    ensureValidProjectId(req.params.id);
     const project = await Project.findById(req.params.id);
     if (!project) {
       res.status(404);
@@ -113,6 +123,7 @@ export const updateProject = async (req, res, next) => {
       return res.json(project);
     }
 
+    ensureValidProjectId(req.params.id);
     const project = await Project.findByIdAndUpdate(req.params.id, updates, {
       new: true,
       runValidators: true
@@ -141,6 +152,7 @@ export const deleteProject = async (req, res, next) => {
       return res.json({ message: "Project deleted" });
     }
 
+    ensureValidProjectId(req.params.id);
     const project = await Project.findByIdAndDelete(req.params.id);
     if (!project) {
       res.status(404);

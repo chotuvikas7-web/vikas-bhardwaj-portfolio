@@ -1,7 +1,9 @@
+import mongoose from "mongoose";
 import Category from "../models/Category.js";
 import { readCategories, writeCategories } from "../utils/fileCategoryStore.js";
 
 const normalizeName = (name) => (typeof name === "string" ? name.trim() : "");
+const isValidId = (id) => mongoose.isValidObjectId(id);
 
 export const getCategories = async (req, res, next) => {
   try {
@@ -61,6 +63,11 @@ export const deleteCategory = async (req, res, next) => {
       }
       await writeCategories(filtered);
       return res.json({ message: "Category deleted" });
+    }
+
+    if (!isValidId(req.params.id)) {
+      res.status(404);
+      throw new Error("Category not found");
     }
 
     const category = await Category.findByIdAndDelete(req.params.id);
