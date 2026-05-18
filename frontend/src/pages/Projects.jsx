@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid3X3, List, RefreshCcw } from "lucide-react";
+import { Grid3X3, List, Loader2, RefreshCcw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
@@ -26,6 +26,7 @@ const Projects = ({ embedded = false }) => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [viewMode, setViewMode] = useState("grid");
   const [visibleCount, setVisibleCount] = useState(initialProjectCount);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -65,7 +66,16 @@ const Projects = ({ embedded = false }) => {
 
   useEffect(() => {
     setVisibleCount(initialProjectCount);
+    setLoadingMore(false);
   }, [activeCategory, viewMode, projects.length]);
+
+  const handleLoadMore = () => {
+    setLoadingMore(true);
+    window.setTimeout(() => {
+      setVisibleCount((count) => count + projectLoadStep);
+      setLoadingMore(false);
+    }, 350);
+  };
 
   const sortedProjects = useMemo(() => sortWebsiteFirst(projects), [projects]);
   const filteredProjects = embedded
@@ -228,7 +238,14 @@ const Projects = ({ embedded = false }) => {
             {viewMode === "grid" ? (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {visibleProjects.map((project) => (
-                  <ProjectCard key={project._id} project={project} />
+                  <motion.div
+                    key={project._id}
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.38, ease: "easeOut" }}
+                  >
+                    <ProjectCard project={project} />
+                  </motion.div>
                 ))}
               </div>
             ) : (
@@ -239,10 +256,12 @@ const Projects = ({ embedded = false }) => {
               <div className="mt-10 flex justify-center">
                 <button
                   type="button"
-                  className="inline-flex items-center justify-center rounded-md border border-cyan-200/35 bg-cyan-100/10 px-6 py-3 text-sm font-bold text-slate-950 shadow-[0_0_24px_rgba(34,211,238,0.12)] transition hover:border-cyan-300 hover:bg-cyan-100/20 dark:text-cyan-50"
-                  onClick={() => setVisibleCount((count) => count + projectLoadStep)}
+                  className="inline-flex min-w-36 items-center justify-center gap-2 rounded-md border border-cyan-200/35 bg-cyan-100/10 px-6 py-3 text-sm font-bold text-slate-950 shadow-[0_0_24px_rgba(34,211,238,0.12)] transition hover:border-cyan-300 hover:bg-cyan-100/20 disabled:cursor-not-allowed disabled:opacity-70 dark:text-cyan-50"
+                  onClick={handleLoadMore}
+                  disabled={loadingMore}
                 >
-                  Load more
+                  {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {loadingMore ? "Loading..." : "Load more"}
                 </button>
               </div>
             )}
