@@ -1,9 +1,15 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const ProjectForm = ({ initialProject, values, onChange, imageFile, onImageFileChange, onSubmit, isSaving, onCancel, onClear, categories = [] }) => {
   const [errors, setErrors] = useState({});
   const fileInputRef = useRef(null);
   const hasDraftValues = Object.values(values).some((value) => String(value || "").trim());
+
+  useEffect(() => {
+    if (!imageFile && fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, [imageFile]);
 
   const updateField = (field) => (event) => {
     if (field === "image" && imageFile) {
