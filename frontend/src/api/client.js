@@ -34,6 +34,7 @@ const getApiBaseUrl = () => {
 };
 
 const apiBaseUrl = normalizeUrl(getApiBaseUrl());
+export const fallbackProjectImage = "/project-images/portfolio-cms.png";
 
 export const api = axios.create({
   baseURL: apiBaseUrl
@@ -51,7 +52,7 @@ api.interceptors.request.use((config) => {
 });
 
 export const imageUrl = (path) => {
-  if (!path) return "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80";
+  if (!path) return fallbackProjectImage;
   if (path.startsWith("http")) return path;
   if (!path.startsWith("/uploads/")) return path.startsWith("/") ? path : `/${path}`;
 

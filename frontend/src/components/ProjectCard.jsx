@@ -1,7 +1,7 @@
 import React from "react";
 import { ExternalLink, Github } from "lucide-react";
 import { motion } from "framer-motion";
-import { imageUrl } from "../api/client";
+import { fallbackProjectImage, imageUrl } from "../api/client";
 
 const ProjectCard = ({ project }) => (
   <motion.article
@@ -13,7 +13,14 @@ const ProjectCard = ({ project }) => (
     className="group overflow-hidden rounded-xl border border-slate-900/10 bg-white/75 shadow-2xl shadow-slate-400/20 backdrop-blur-xl dark:border-white/15 dark:bg-white/10 dark:shadow-black/20"
   >
     <div className="relative h-56 overflow-hidden">
-      <img src={imageUrl(project.image)} alt={project.title} className="h-full w-full object-cover transition duration-700 group-hover:scale-110" />
+      <img
+        src={imageUrl(project.image)}
+        alt={project.title}
+        className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+        onError={(event) => {
+          event.currentTarget.src = fallbackProjectImage;
+        }}
+      />
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/10 to-transparent" />
       {project.category && (
         <span className="absolute left-4 top-4 rounded-full border border-cyan-100/20 bg-slate-950/45 px-3 py-1 text-xs font-semibold text-cyan-50 backdrop-blur">

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { api, getApiErrorMessage } from "../api/client";
+import { api, fallbackProjectImage, getApiErrorMessage } from "../api/client";
 import DataTable from "../components/DataTable";
 import PageShell from "../components/PageShell";
 import { imageUrl } from "../api/client";
@@ -56,7 +56,14 @@ const Projects = ({ embedded = false }) => {
       label: "Project",
       render: (project) => (
         <div className="flex min-w-[260px] items-center gap-4">
-          <img src={imageUrl(project.image)} alt={project.title} className="h-14 w-20 rounded-lg object-cover shadow-lg shadow-black/20" />
+          <img
+            src={imageUrl(project.image)}
+            alt={project.title}
+            className="h-14 w-20 rounded-lg object-cover shadow-lg shadow-black/20"
+            onError={(event) => {
+              event.currentTarget.src = fallbackProjectImage;
+            }}
+          />
           <div>
             <p className="font-semibold text-slate-950 dark:text-white">{project.title}</p>
             <p className="mt-1 line-clamp-2 max-w-sm text-xs leading-5 text-slate-600 dark:text-white/60">{project.description}</p>

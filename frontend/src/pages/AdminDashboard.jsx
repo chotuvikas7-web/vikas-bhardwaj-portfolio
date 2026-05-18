@@ -22,7 +22,7 @@ import {
   Plus
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
-import { api, getApiErrorMessage, imageUrl } from "../api/client";
+import { api, fallbackProjectImage, getApiErrorMessage, imageUrl } from "../api/client";
 import DataTable from "../components/DataTable";
 import ProjectForm from "../components/ProjectForm";
 import { useAuth } from "../context/AuthContext";
@@ -630,7 +630,14 @@ const AdminDashboard = () => {
       accessor: (project) => `${project.title} ${project.description}`,
       render: (project) => (
         <div className="flex items-center gap-3">
-          <img src={imageUrl(project.image)} alt={project.title} className="h-14 w-20 rounded-xl object-cover" />
+          <img
+            src={imageUrl(project.image)}
+            alt={project.title}
+            className="h-14 w-20 rounded-xl object-cover"
+            onError={(event) => {
+              event.currentTarget.src = fallbackProjectImage;
+            }}
+          />
           <div>
             <p className="font-semibold text-slate-950 dark:text-white">{project.title}</p>
             <p className="line-clamp-1 text-sm text-slate-600 dark:text-slate-400">{project.description}</p>
