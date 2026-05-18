@@ -51,6 +51,19 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && typeof window !== "undefined" && !window.location.pathname.includes("/admin/login")) {
+      localStorage.removeItem("portfolio_token");
+      localStorage.removeItem("portfolio_user");
+      window.location.assign("/admin/login");
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 export const imageUrl = (path) => {
   if (!path) return fallbackProjectImage;
   if (path.startsWith("data:")) return path;

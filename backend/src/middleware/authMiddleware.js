@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import User from "../models/User.js";
 
 export const protect = async (req, res, next) => {
@@ -21,6 +22,11 @@ export const protect = async (req, res, next) => {
         role: decoded.role || "admin"
       };
       return next();
+    }
+
+    if (!mongoose.isValidObjectId(decoded.id)) {
+      res.status(401);
+      throw new Error("Session expired. Please sign in again.");
     }
 
     req.user = await User.findById(decoded.id).select("-password");
