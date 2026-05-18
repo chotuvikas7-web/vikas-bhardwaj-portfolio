@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid3X3, List, RefreshCcw } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -9,6 +9,14 @@ import DataTable from "../components/DataTable";
 import PageShell from "../components/PageShell";
 import { imageUrl } from "../api/client";
 import ProjectCard from "../components/ProjectCard";
+
+const categoryPriority = (category) => (category === "Website" ? 0 : 1);
+const sortWebsiteFirst = (items) =>
+  [...items].sort((a, b) => {
+    const priority = categoryPriority(a.category) - categoryPriority(b.category);
+    if (priority !== 0) return priority;
+    return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+  });
 
 const Projects = ({ embedded = false }) => {
   const [projects, setProjects] = useState([]);
@@ -38,7 +46,10 @@ const Projects = ({ embedded = false }) => {
       const { data } = await api.get("/categories", {
         params: { t: Date.now() }
       });
-      setCategories(["All", ...data.map((category) => category.name)]);
+      const categoryNames = data
+        .map((category) => category.name)
+        .sort((a, b) => categoryPriority(a) - categoryPriority(b) || a.localeCompare(b));
+      setCategories(["All", ...categoryNames]);
     } catch (err) {
       console.warn("Could not load categories", err);
     }
@@ -49,7 +60,10 @@ const Projects = ({ embedded = false }) => {
     fetchCategories();
   }, []);
 
-  const visibleProjects = embedded ? projects.slice(0, 3) : projects.filter((project) => activeCategory === "All" || project.category === activeCategory);
+  const sortedProjects = useMemo(() => sortWebsiteFirst(projects), [projects]);
+  const visibleProjects = embedded
+    ? sortedProjects.slice(0, 3)
+    : sortedProjects.filter((project) => activeCategory === "All" || project.category === activeCategory);
   const projectColumns = [
     {
       key: "title",

@@ -1,22 +1,16 @@
 import React from "react";
 import { ExternalLink, Github } from "lucide-react";
-import { motion } from "framer-motion";
 import { fallbackProjectImage, imageUrl } from "../api/client";
 
 const ProjectCard = ({ project }) => (
-  <motion.article
-    layout
-    initial={{ opacity: 0, y: 22, scale: 0.96 }}
-    animate={{ opacity: 1, y: 0 }}
-    whileHover={{ y: -8, scale: 1.02 }}
-    transition={{ duration: 0.35 }}
+  <article
     className="group overflow-hidden rounded-xl border border-slate-900/10 bg-white/75 shadow-2xl shadow-slate-400/20 backdrop-blur-xl dark:border-white/15 dark:bg-white/10 dark:shadow-black/20"
   >
     <div className="relative h-56 overflow-hidden">
       <img
         src={imageUrl(project.image)}
         alt={project.title}
-        className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+        className="h-full w-full object-cover"
         onError={(event) => {
           event.currentTarget.src = fallbackProjectImage;
         }}
@@ -53,7 +47,7 @@ const ProjectCard = ({ project }) => (
         )}
       </div>
     </div>
-  </motion.article>
+  </article>
 );
 
 export default ProjectCard;
