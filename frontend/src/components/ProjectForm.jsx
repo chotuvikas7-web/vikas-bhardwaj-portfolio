@@ -1,13 +1,26 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 const ProjectForm = ({ initialProject, values, onChange, imageFile, onImageFileChange, onSubmit, isSaving, onCancel, onClear, categories = [] }) => {
   const [errors, setErrors] = useState({});
+  const fileInputRef = useRef(null);
   const hasDraftValues = Object.values(values).some((value) => String(value || "").trim());
 
   const updateField = (field) => (event) => {
+    if (field === "image" && imageFile) {
+      onImageFileChange(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+
     onChange({ ...values, [field]: event.target.value });
     if (errors[field]) {
       setErrors((current) => ({ ...current, [field]: "" }));
+    }
+  };
+
+  const updateImageFile = (file) => {
+    onImageFileChange(file);
+    if (file) {
+      onChange({ ...values, image: "" });
     }
   };
 
@@ -81,10 +94,11 @@ const ProjectForm = ({ initialProject, values, onChange, imageFile, onImageFileC
         <label className="space-y-1 text-sm font-medium text-slate-800 dark:text-slate-100">
           <span>Upload image</span>
           <input
+            ref={fileInputRef}
             className="input file:mr-3 file:rounded-md file:border-0 file:bg-slate-950 file:px-3 file:py-1.5 file:text-white dark:file:bg-emerald-400 dark:file:text-slate-950"
             type="file"
             accept="image/*"
-            onChange={(event) => onImageFileChange(event.target.files?.[0] || null)}
+            onChange={(event) => updateImageFile(event.target.files?.[0] || null)}
           />
         </label>
       </div>
